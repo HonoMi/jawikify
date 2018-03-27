@@ -88,7 +88,8 @@ RUN ldconfig
 
 # jawikify
 WORKDIR /opt
-RUN git clone https://github.com/conditional/jawikify
+RUN mkdir /opt/jawikify
+ADD . /opt/jawikify
 WORKDIR /opt/jawikify
 # モデル・インベントリのデータをダウンロードします。（合計、およそ2GB程度）
 RUN ./download_data.sh
