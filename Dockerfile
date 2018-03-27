@@ -71,7 +71,7 @@ RUN ./configure && make && make install
 
 # ruby用のライブラリインストール
 WORKDIR /opt
-RUN gem install oj nokogiri mecab
+RUN gem install oj nokogiri mecab moji levenshtein
 RUN git clone https://github.com/abicky/crfsuite.git
 WORKDIR /opt/crfsuite/swig/ruby/
 RUN ./prepare.sh --swig && ruby extconf.rb && make install
@@ -83,6 +83,8 @@ WORKDIR /opt/kyotocabinet-ruby-1.32
 RUN sed -i 's/Config/RbConfig/g' extconf.rb
 RUN sed -i 's/define _KC_YARV_//g' kyotocabinet.cc
 RUN ruby extconf.rb && make install
+
+RUN ldconfig
 
 # jawikify
 WORKDIR /opt

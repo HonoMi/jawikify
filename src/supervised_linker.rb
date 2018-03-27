@@ -86,7 +86,8 @@ if __FILE__ == $0
   
   cg_filename = (params['c'] || 'data/master06_candidates.kct') 
   #kb_filename = (params['k'] || 'data/master06_content_mecab_annotated.kch')
-  kb_filename       = params['k'] || 'work/kb.kch'
+  #kb_filename       = params['k'] || 'work/kb.kch'
+  kb_filename = (params['k'] || 'data/master06_content.kch')
   
   #linker = Linker.new(cg_filename, kb_filename, MostFrequentDisambiguator)
   #disambiguate_strategy = 
