@@ -65,7 +65,8 @@ class GlobalBoWSimilarity
   
   def entity_representation(entity)
     e = Hash.new(0.0)
-    entity['abstract_mecab'].each_line do |token|
+    #entity['abstract_mecab'].each_line do |token|
+    entity['abstract'].each_line do |token|
       t = token.split("\t").first
       e[t] += idf(t)
     end
