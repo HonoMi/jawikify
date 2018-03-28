@@ -94,4 +94,8 @@ WORKDIR /opt/jawikify
 # モデル・インベントリのデータをダウンロードします。（合計、およそ2GB程度）
 RUN ./download_data.sh
 
-CMD ["/bin/bash", "while true; do echo; sleep 1; done"]
+# 日本語環境に切り替え
+RUN apt-get install -y language-pack-ja-base language-pack-ja
+ENV LANG=ja_JP.UTF-8
+
+CMD ["/bin/bash", "-c", "tail -f /dev/null"]
