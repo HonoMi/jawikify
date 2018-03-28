@@ -72,6 +72,38 @@ God
 
 ~~ 新たにリンク対象としたいエンティティを json 形式で記述し、別名辞書に追加することによって、 Wikipedia に含まれていないエンティティ-表層に対するリンクを行うことが可能です。 ~~
 
+# Dockerコンテナ
+
+本プロジェクトはDockerにより環境構築が可能です。
+
+## Dockerイメージ構築
+
+```
+docker build -t jawikify ./
+```
+
+## Dockerコンテナ起動
+
+Dockerコンテナをデーモンモードで起動しっぱなしにしておくことで、API（もどき）として利用ができます。
+
+```
+docker run --name jawikify-container -id jawikify
+```
+
+## Jawikifyの呼び出し
+
+標準入力でコンテナに文字列を渡します。
+
+```
+echo 'サッカーのワールドカップ（W杯）へ調整を続ける⽇本代表は2⽇、W杯会場となる神⼾市の神⼾ウイングスタジアムでホンジュラスとのキリン・カップ第２戦に臨む。' | docker exec -i jawikify-container ./jawikify
+```
+
+標準出力として結果が返されます。
+
+```
+{"ner":{"sentences":["サッカーのワールドカップ（W杯）へ調整を続ける⽇本代表は2⽇、W杯会場となる神⼾市の神⼾ウイングスタジアムでホンジュラスとのキリン・カップ第２戦に臨む。"],"extracted":[[["サッカー","Product"],["ワールドカップ（W杯","Event"],["⽇本代表","Product"],["ホンジュラス","Location"],["キリン・カップ第２戦","Event"]]],"linked":[[{"surface":"サッカー","title":"サッカー","score":2.131},{"surface":"ワールドカップ（W杯","title":null,"score":0.0},{"surface":"⽇本代表","title":null,"score":0.0},{"surface":"ホンジュラス","title":"ホンジュラス","score":2.03},{"surface":"キリン・カップ第２戦","title":null,"score":0.0}]]}}
+```
+
 
 # ToDo
 

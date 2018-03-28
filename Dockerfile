@@ -93,6 +93,5 @@ ADD . /opt/jawikify
 WORKDIR /opt/jawikify
 # モデル・インベントリのデータをダウンロードします。（合計、およそ2GB程度）
 RUN ./download_data.sh
-RUN cat test.txt | ./jawikify
 
-CMD ["/bin/bash"]
+CMD ["/bin/bash", "while true; do echo; sleep 1; done"]
