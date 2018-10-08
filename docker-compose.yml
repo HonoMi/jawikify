@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  jawikify:
+    container_name: "jawikify"
+    build: .
+    ports:
+      - 8078:8078
+    # command: bash -c "source ./setup.sh; python run_server.py -p 8078"
+    command: bash -c "source ./setup.sh; python3.6 run_server.py -p 8078"

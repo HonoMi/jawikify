@@ -1,5 +1,18 @@
 FROM ubuntu:16.04
-MAINTAINER kensuke-mi <kensuke.mit@gmail.com>
+# MAINTAINER kensuke-mi <kensuke.mit@gmail.com>
+
+# python3.6
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+# RUN apt-get install -y vim
+RUN add-apt-repository ppa:jonathonf/python-3.6
+RUN apt-get update
+
+RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip python3.6-venv
+# RUN apt-get install -y git
+
+RUN python3.6 -m pip install pip --upgrade
+RUN python3.6 -m pip install wheel
 
 # ソフトウェアのダウンロード元
 ENV CRFSUITE_SOURCE_URL https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
@@ -98,4 +111,14 @@ RUN ./download_data.sh
 RUN apt-get install -y language-pack-ja-base language-pack-ja
 ENV LANG=ja_JP.UTF-8
 
-CMD ["/bin/bash", "-c", "tail -f /dev/null"]
+# pip install
+COPY requirements.txt ${WORKDIR}/requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+
+# サーバの立ち上げ
+EXPOSE 8078
+
+CMD bash -c "source ./setup.sh; python3.6 run_server.py -p 8078"
+# CMD ["/bin/bash", "-c", "tail -f /dev/null"]
