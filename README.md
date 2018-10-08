@@ -1,3 +1,19 @@
+# How to use
+1. サービスの起動
+    ```sh
+        cd jawikify
+        docker-compose up --build -d
+    ```
+    依存関係があるので、`python run_server.py` では行かない。
+2. APIを叩く。
+    ```sh
+        ./test_api.sh
+    ```
+
+
+
+
+
 # jawikify
 
 jawikify は、日本語テキストに対する wikification を行うためのツールキットです。

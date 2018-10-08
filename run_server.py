@@ -6,8 +6,7 @@ import argparse
 import tempfile
 import json
 from sanic import Sanic
-from sanic.response import json as sanic_json
-from sanic.response import text as sanic_text
+from sanic import response
 from honoka_utility import util
 
 app = Sanic()
@@ -24,22 +23,22 @@ def get_args():
 async def classify(request):
     '''
         input: {
-            'query': [
-                {'sentence': '角刈りにパイソン柄のセットアップ、目元には怪しいサングラスをした謎の男性が、「ペンパイナッポーアッポーペン」と、テクノ調の曲で歌い踊る約１分間の動画が世界を席巻している。'},
-                {'sentence': 'マクドナルドやスターバックスコーヒーといった外資大手外食..'},
+            "query": [
+                {"sentence": "角刈りにパイソン柄のセットアップ、目元には怪しいサングラスをした謎の男性が、「ペンパイナッポーアッポーペン」と、テクノ調の曲で歌い踊る約１分間の動画が世界を席巻している。"},
+                {"sentence": "マクドナルドやスターバックスコーヒーといった外資大手外食.."},
                 ..
             ]
         }
 
         output: {
-            'result': [
+            "result": [
                 {
-                    'sentence': 'サッカーのワールドカップ（W杯）へ調整を続ける⽇本代表は..',
-                    'extracted': [
+                    "sentence": "サッカーのワールドカップ（W杯）へ調整を続ける⽇本代表は..",
+                    "extracted": [
                         {"surface": "サングラス", "class": "Product"},
                         {"surface": "ペンパイナッポーアッポーペン", "class": "Product"},
                     ],
-                    'linked': [
+                    "linked": [
                         {
                             "surface": "サングラス",
                             "title": "サングラス",
@@ -71,7 +70,7 @@ async def classify(request):
             'extracted': [{'surface': extracted[0], 'class': extracted[1]} for extracted in extracted_in_sent],
             'linked': [linked for linked in linked_in_sent],
         })
-    return sanic_text(ret_json)
+    return response.json(ret_json)
 
 
 if __name__ == '__main__':
