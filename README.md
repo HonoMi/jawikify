@@ -1,15 +1,18 @@
-# How to use
-1. サービスの起動
-    ```sh
-        cd jawikify
-        docker-compose up --build -d
-    ```
-    依存関係があるので、`python run_server.py` では行かない。
-2. APIを叩く。
+# How to use.
+1. サービスを立ち上げる。
+    * dockerで立ち上げる場合
+        ```sh
+            # apt-getの設定(proxy等)を書く。このファイルは、docker-imageの中で使われる。
+            vi apt.conf
+            # imageをビルドする。
+            docker-compose build --no-cache --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROX http_proxy=$HTTP_PROXY --build-arg https_proxy=$HTTPS_PROX
+            # containerを立ち上げる。
+            docker-compose up -d
+        ```
+2. APIを試す。
     ```sh
         ./test_api.sh
     ```
-
 
 
 

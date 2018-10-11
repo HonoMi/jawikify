@@ -2,6 +2,7 @@ FROM ubuntu:16.04
 # MAINTAINER kensuke-mi <kensuke.mit@gmail.com>
 
 # python3.6
+COPY apt.conf /etc/apt/apt.conf
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 # RUN apt-get install -y vim
