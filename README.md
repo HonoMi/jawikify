@@ -1,3 +1,26 @@
+# todo
+* jawikify nerの問題点
+
+
+# jawikify nerの問題点
+
+## 対策
+* 自作ner！
+    - deep learningで。
+* jawikify の前段nerの部分をcabcochaに差し替える。
+* cabochaでnerしてからjawikifyにうまく渡す。
+    - nerされた部分をsentenceとして渡す。
+
+## 観測事実
+* "モーツァルト宿" が 抜き出される。
+* "オリンピック" が 抜き出されない。
+上記いずれも、cabochaのnerは正解を引ける。
+
+
+
+
+
+
 # How to use.
 1. サービスを立ち上げる。
     * dockerで立ち上げる場合
