@@ -1,20 +1,33 @@
 # todo
-* jawikify nerの問題点
+* 問題点の整理
 
 
-# jawikify nerの問題点
+
+
+# jawikify API
+
+## 概要
+jawikify は 1. NER 2. linking の２パイプ構成。
+1のNERでは、自作の機械学習器を用いている。しかし、こいつの性能が悪い。
+
+よってjawikifyのlinkingだけをAPIとして分離した。
+cabochaのNERと合わせて使えば、wikificationができる。
 
 ## 対策
-* 自作ner！
-    - deep learningで。
-* jawikify の前段nerの部分をcabcochaに差し替える。
-* cabochaでnerしてからjawikifyにうまく渡す。
-    - nerされた部分をsentenceとして渡す。
+* cabochaとつなげる。
+    - 問題点: nerの範囲が、IREX
+* 辞書を用意する。
+    - 一致したもの全てを返す。
+* 自作nerを作る。
+    - メリット: *研究になる。*
+        * deep learningで。
+    - デメリット
+        * おそらく、red ocean
 
 ## 観測事実
-* "モーツァルト宿" が 抜き出される。
-* "オリンピック" が 抜き出されない。
-上記いずれも、cabochaのnerは正解を引ける。
+* "モーツァルト宿" が NamedEntityとなる。
+* "オリンピック" が NamedEntityとならない。
+上記いずれも、cabochaのNERは正解を引ける。
 
 
 
@@ -22,16 +35,19 @@
 
 
 # How to use.
+1. モデルを取得する。
+    ```sh
+        ./download_data.sh
+    ```
 1. サービスを立ち上げる。
-    * dockerで立ち上げる場合
-        ```sh
-            # apt-getの設定(proxy等)を書く。このファイルは、docker-imageの中で使われる。
-            vi apt.conf
-            # imageをビルドする。
-            docker-compose build --no-cache --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROX http_proxy=$HTTP_PROXY --build-arg https_proxy=$HTTPS_PROX
-            # containerを立ち上げる。
-            docker-compose up -d
-        ```
+    ```sh
+        # apt-getの設定(proxy等)を書く。このファイルは、docker-imageの中で使われる。
+        vi apt.conf
+        # imageをビルドする。
+        docker-compose build --no-cache --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROX --build-arg http_proxy=$HTTP_PROXY --build-arg https_proxy=$HTTPS_PROXY
+        # containerを立ち上げる。
+        docker-compose up -d
+    ```
 2. APIを試す。
     ```sh
         ./test_api.sh

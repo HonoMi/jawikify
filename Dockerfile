@@ -100,28 +100,28 @@ RUN ruby extconf.rb && make install
 
 RUN ldconfig
 
-# jawikify
-# WORKDIR /opt    # by mazda
-ENV JAWIKIFY_WORK_DIR /opt/jawikify
-RUN mkdir -p ${JAWIKIFY_WORK_DIR}
-WORKDIR ${JAWIKIFY_WORK_DIR}
-# モデル・インベントリのデータをダウンロードします。（合計、およそ2GB程度）
-COPY ./download_data.sh .
-RUN ./download_data.sh
-ADD . ${JAWIKIFY_WORK_DIR}
-
 # 日本語環境に切り替え
 RUN apt-get install -y language-pack-ja-base language-pack-ja
+RUN apt-get install -y vim
 ENV LANG=ja_JP.UTF-8
 
 # pip install
-COPY requirements.txt ${WORKDIR}/requirements.txt
 RUN pip install --upgrade pip
+COPY ./requirements.txt ${WORKDIR}
+ENV GIT_SSL_NO_VERIFY 1
 RUN pip install -r requirements.txt
+
+# WORKDIR /opt    # by mazda
+ENV JAWIKIFY_WORK_DIR /opt/jawikify/
+WORKDIR ${JAWIKIFY_WORK_DIR}
+# モデル・インベントリのデータをダウンロードします。（合計、およそ2GB程度）
+# ADD . ${JAWIKIFY_WORK_DIR}
+# RUN ./download_data.sh
+COPY . ${JAWIKIFY_WORK_DIR}
 
 
 # サーバの立ち上げ
 EXPOSE 8079
 
-CMD bash -c "source ./setup.sh; python3.6 run_server.py -p 8079"
+CMD bash -c "source ./setup.sh; python3.6 ./run_server.py -p 8079"
 # CMD ["/bin/bash", "-c", "tail -f /dev/null"]

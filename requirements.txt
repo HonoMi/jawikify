@@ -1,2 +1,2 @@
-git+https://github.com/HonoMi/honoka_utility
+git+https://gitlab.rdcloud.intra.hitachi.co.jp/71389710/python_utility.git
 sanic

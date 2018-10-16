@@ -1,0 +1,5 @@
+#!/bin/bash
+
+python3.6 ./src/annotate_nemecab.py | tee hoge |
+ruby src/supervised_linker.rb -f extracted -t linked |
+ruby src/clean_json.rb

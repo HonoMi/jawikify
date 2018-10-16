@@ -8,6 +8,7 @@ import json
 from sanic import Sanic
 from sanic import response
 from honoka_utility import util
+from pdb import set_trace
 
 app = Sanic()
 
@@ -19,8 +20,75 @@ def get_args():
     return args
 
 
-@app.route('/jawikify', methods=['POST'])
+def format_jawikify_result(result_json):
+    ner_results = result_json['ner']
+    ret_json = {'result': []}
+    for sentence, extracted_in_sent, linked_in_sent in zip(ner_results['sentences'], ner_results['extracted'], ner_results['linked']):
+        ret_json['result'].append({
+            'sentence': sentence,
+            'extracted': [{'surface': extracted[0], 'class': extracted[1]} for extracted in extracted_in_sent],
+            'linked': [linked for linked in linked_in_sent],
+        })
+    return ret_json
+
+
+@app.route('/link', methods=['POST'])
 async def classify(request):
+    '''
+        input: {
+            "query": [
+                {
+                    "sentence": "角刈りにパイソン柄のセットアップ、目元には怪しいサングラスをした謎の男性が、「ペンパイナッポーアッポーペン」と、テクノ調の曲で歌い踊る約１分間の動画が世界を席巻している。"
+                    "extracted": [
+                        {"surface": "サングラス"},
+                        {"surface": "ペンパイナッポーアッポーペン"}, 
+                    ],
+                    "offset": []
+                },
+                ...
+            ]
+        }
+        output: jawikifyと同じ。
+    '''
+    ''' 中間表現
+        {
+            "ner"{
+            "sentences": [
+                "hoge",
+                "fuga",
+            ],
+            "extraceted":[
+                "サングラス", "日本"
+            ]
+            "offsets": []
+            }
+        }
+    '''
+    rows = request.json['query']
+    ner_input_json = {'ner': {}}
+    ner_input_json['ner']['sentences'] = [row['sentence'] for row in rows]
+    ner_input_json['ner']['extracted'] = [
+        [
+            [named_entity['surface'], 'UserInput']
+            for named_entity in row['extracted']
+        ]
+        for row in rows
+    ]
+    ner_input_json['ner']['offsets'] = [row.get('offset', 0) for row in rows]
+
+    ner_input_file = tempfile.mktemp()
+    with open(ner_input_file, 'w') as f:
+        f.write(json.dumps(ner_input_json))
+
+    cmd = 'cat ' + ner_input_file + ' | bash ./jawikify.link'
+    out, err = util.exec_shell_cmd(cmd)
+    ret_json = format_jawikify_result(json.loads(out))
+    ret_json['query'] = request.json['query']
+    return response.json(ret_json)
+
+
+@app.route('/jawikify', methods=['POST'])
+async def jawikify(request):
     '''
         input: {
             "query": [
@@ -60,16 +128,10 @@ async def classify(request):
     with open(input_text_file, 'w') as f:
         f.write(text)
 
-    cmd = 'cat ' + input_text_file + ' | ./jawikify'
+    cmd = 'cat ' + input_text_file + ' | bash ./jawikify'
     out, err = util.exec_shell_cmd(cmd)
-    ner_results = json.loads(out)['ner']
-    ret_json = {'result': []}
-    for sentence, extracted_in_sent, linked_in_sent in zip(ner_results['sentences'], ner_results['extracted'], ner_results['linked']):
-        ret_json['result'].append({
-            'sentence': sentence,
-            'extracted': [{'surface': extracted[0], 'class': extracted[1]} for extracted in extracted_in_sent],
-            'linked': [linked for linked in linked_in_sent],
-        })
+    ret_json = format_jawikify_result(json.loads(out))
+    ret_json['query'] = request.json['query']
     return response.json(ret_json)
 
 
